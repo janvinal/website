@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>宝山自行车网点地图</title>
+  <!--引用百度地图API-->
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=7Cc5Kmn672miPzG4qQhvlOrERcXMMinq"></script>
+
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+    }
+
+    div#map {
+      width: 100%;
+      height: 100%;
+      border: #ccc solid 1px;
+      font-size: 12px;
+    }
+  </style>
+
+</head>
+<!-- JS, CSS, HTML, SQL, PYTHON, C, C++, React, R Reference -->
+<!-- https://www.w3schools.com/jsref/default.asp -->
+<!-- 宝山公共自行车地址 -->
+<!-- https://www.shxwcb.com/187761.html -->
+<!-- 百度地图坐标拾取器 -->
+<!-- http://api.map.baidu.com/lbsapi/getpoint/index.html -->
+
+<body>
+  <!--百度地图容器-->
+  <div id="map"></div>
+  <!-- <p style="color:red;font-weight:600">地图生成工具基于百度地图JS api v2.0版本开发，使用请申请密匙。
+      <a href="http://developer.baidu.com/map/index.php?title=jspopular/guide/introduction" style="color:#2f83c7" target="_blank">了解如何申请密匙</a>
+      <a href="http://lbsyun.baidu.com/apiconsole/key?application=key" style="color:#2f83c7" target="_blank">申请密匙</a>
+    </p> -->
+</body>
+<script type="text/javascript">
+  //创建和初始化地图函数：
+  function initMap() {
+    createMap();//创建地图
+    setMapEvent();//设置地图事件
+    addMapControl();//向地图添加控件
+    addMapOverlay();//向地图添加覆盖物
+  }
+  function createMap() {
+    map = new BMap.Map("map");
+    map.centerAndZoom(new BMap.Point(121.473358, 31.409539), 16);
+  }
+  function setMapEvent() {
+    map.enableScrollWheelZoom();
+    map.enableKeyboard();
+    map.enableDragging();
+    map.enableDoubleClickZoom()
+  }
+  function addClickHandler(target, window) {
+    target.addEventListener("click", function () {
+      target.openInfoWindow(window);
+    });
+  }
+  function addMapOverlay() {
+
+    const yangHangMarkers = [
+      `
+      宝地绿洲城北区-东南门
+地址：湄浦路219弄1-24号
+坐标：121.469536,31.412291
+      `,
+      `
+      友谊家园-东区
+地址：铁峰路2001弄1～107号
+坐标：121.462912,31.403443
+`,
+      `
+      保集欧郡
+地址：上海市宝山区友谊路1999弄1~57号
+坐标：121.45313,31.398149
+`,
+      `
+      海尚明城
+地址：上海市宝山区友谊路1869弄
+坐标：121.454254,31.400477
+`,
+      `
+      砖块公寓
+地址：富杨路223号
+坐标：121.443552,31.394583
+`,
+      `
+      东方丽都
+地址：友谊路2858弄之1-87号
+坐标：121.440263,31.389984
+`,
+      `
+      杨北中心村-西门
+地址：杨北中心村
+坐标：121.416777,31.398762
+`,
+      `
+      万业紫辰苑-南门
+地址：上海市宝山区白沙园路
+坐标：121.441459,31.404124
+`,
+      `
+      杨泰春城-西门
+地址：上海市宝山区镇泰路388弄1~45号边门
+坐标：121.441024,31.38637
+`,
+      `
+      同盛嘉园东区停车场-入口
+地址：月城路300弄
+坐标：121.440718,31.384705
+`,
+      `
+      四季花城二期-北门
+地址：上海市宝山区镇泰路111弄1~159号
+坐标：121.451597,31.389992
+`,
+      `
+      杨泰三村东区-西门
+地址：杨泰路51~120号
+坐标：121.445111,31.386485
+`,
+      `
+      菜鸟驿站(杨泰康苑店)
+地址：上海市宝山区松兰路杨泰康苑西南侧
+坐标：121.454815,31.379059
+`,
+      `
+      禄德华苑-西门
+地址：上海市宝山区杨鑫路98弄1-73号边门号
+坐标：121.456205,31.376435
+`,
+      `
+      春江美庐社区-西南门
+地址：上海市宝山区松兰路
+坐标：121.45806,31.372428
+`,
+      `
+      康桥水都幼儿园-西南门
+地址：上海市宝山区竹韵路8号
+坐标：121.450671,31.369454
+`,
+      `
+      共享雨伞
+地址：上海市宝山区地铁1号线友谊西路站友谊西路站F1
+坐标：121.434441,31.387946
+`,
+      `
+      站层图
+地址：上海市宝山区地铁1号线富锦路站富锦路站F2
+坐标：121.430846,31.39913
+`,
+      `
+      税务局办税服务厅
+地址：上海市宝山区杨行镇铁山路988号
+坐标：121.458768,31.397255
+`,
+      `
+      钢领
+地址：上海市宝山区友谊路1588弄
+坐标：121.45994,31.400384
+`,
+      `
+      宝钢果园公寓-东门
+地址：克山路550弄1～8号
+坐标：121.471417,31.413517
+`,
+      `
+      上海市公安局宝山分局-东南门
+地址：上海市宝山区友谊路999号
+坐标：121.474837,31.406047
+`,
+      `
+      宝山区市政巡查中心
+地址：镇泰路299号
+坐标：121.44802,31.388577
+`,
+      `
+      呈康篮球训练营
+地址：杨泰路901号
+坐标：121.437145,31.394862
+`,
+      `
+      中共上海市宝山区委党校
+地址：上海市宝山区友谊路2299号
+坐标：121.449989,31.396606
+`,
+      `
+      上海大学附属宝山外国语学校
+地址：上海市宝山区铁山路2288号
+坐标：121.453696,31.406306
+`,
+      `
+      和家欣苑D区-东南门
+地址：顾北东路39弄
+坐标：121.422709,31.367292
+`,
+      `
+      停车场(海德花园北)
+地址：杨北路与海笛路交叉口东南50米
+坐标：121.427029,31.399039
+`,
+      `
+      富锦苑-东北门
+地址：富锦路1815弄-1号90号
+坐标：121.440313,31.409822
+`,
+      `
+      宝山区气象局
+地址：上海市宝山区友谊路1888号
+坐标：121.454545,31.397428
+`,
+      `
+      上海济光职业技术学院-东南门
+地址：水产路2859
+坐标：121.441805,31.369699
+`,
+      `
+      杨行镇社区事务受理服务中心
+地址：上海市宝山区杨行镇松兰路826号
+坐标：121.453101,31.385233
+`,
+      `
+      杨泰公寓-西南门
+地址：杨行镇梅林路666弄
+坐标：121.442739,31.373915
+`,
+      `
+      杨泰一村
+地址：杨桃路318弄
+坐标：121.445756,31.378793
+`,
+      `
+      杨桃路185弄-3号楼
+地址：杨桃路185弄3号
+坐标：121.445756,31.378793
+`,
+      `
+      香逸湾-东门
+地址：上海市宝山区莲花山路517弄附近
+坐标：121.453717,31.369421
+`,
+      `
+      杨行社区卫生服务中心-预防接种门诊
+地址：杨泰路239号
+坐标：121.450495,31.377143
+`,
+      `
+      上海银行(杨行支行)
+地址：上海市宝山区杨鑫路443号
+坐标：121.442811,31.372662
+`,
+      `
+      上海北部物流中心有限公司-西北门
+地址：水产路1458号
+坐标：121.485843,31.384509
+`,
+      `
+      上海魔族国际青年社区
+地址：杨南路618号(地铁1号线)
+坐标：121.406468,31.406569
+`,
+      `
+      中冶盘古馨苑-东门
+地址：杨行镇盘古路927号
+坐标：121.469078,31.407661
+`,
+      `
+      上海宝山杨行镇金秋晨曦老年公寓
+地址：上海市宝山区盘古路1911
+坐标：121.451755,31.401732
+`,
+      `
+      上海市宝山区人民法院
+地址：友谊路989号
+坐标：121.476268,31.407369
+`,
+      `
+      华馨苑
+地址：上海市宝山区藴川路1438弄华馨苑
+坐标：121.437989,31.367849
+`,
+]
+
+    const yuePuMarkers = [
+      `
+      庆安一村-47号
+地址：上海市宝山区绥化路乐业一村南侧约200米
+坐标：121.441564,31.413203
+`,
+      `
+      新月翡翠园-西南门
+地址：月浦镇德都路35弄
+坐标：121.435315,31.409306
+`,
+      `
+      宝莲湖景园
+地址：上海市宝山区绥化路260弄1-22号
+坐标：121.435726,31.412301
+`,
+      `
+      新月锦绣园
+地址：上海市宝山区绥化路166号
+坐标：121.438689,31.412099
+`,
+      `
+      月浦八村-156号楼
+地址：德都路1弄(月浦新村第三小学旁)
+坐标：121.432303,31.420048
+`,
+      `
+      新华书店(月浦店)
+地址：上海市宝山区龙镇路100号
+坐标：121.43259,31.423157
+`,
+      `
+      四元路360弄小区
+地址：上海市宝山区德都路与四元路交叉路口往西南约90米
+坐标：121.430136,31.418805
+`,
+      `
+      乐业五村社区-北门
+地址：四元路366弄1号-14号
+坐标：121.430244,31.419241
+`,
+      `
+      月浦十村-2号
+地址：宝泉路67号
+坐标：121.437583,31.420062
+`,
+      `
+      月浦四、六、七、九村
+地址：德都路389号
+坐标：121.429546,31.424356
+`,
+      `
+      北安路72号
+地址：上海市宝山区北安路与月浦二三村通道交叉路口东侧(月浦五村东北侧)
+坐标：121.433783,31.425469
+`,
+      `
+      马泾桥二村15号居委会门口空地（没找到看 https://www.shxwcb.com/187761.html）
+地址：上海市宝山区富乐路上海市宝山区月浦中心校南侧约60米
+坐标：121.422119,31.424151
+`,
+      `
+      富乐支路/富乐路(路口)
+地址：上海市宝山区
+坐标：121.420982,31.423067
+`,
+      `
+      江杨北路
+途径地铁：地铁3号线
+坐标：121.446235,31.414233
+`,
+      `
+      月浦公寓：四元路西侧
+地址：上海市宝山区四元路月浦公寓
+坐标：121.436606,31.419591
+`,
+      `
+      月浦公园南门
+地址：月浦公园南门
+坐标：121.434521,31.419895
+`,
+      `
+      月浦购物步行街-南门
+地址：上海市宝山区月浦镇龙镇路53号月浦购物步行街F1
+坐标：121.434586,31.423736
+`,
+      `
+      月浦镇人民政府-东北门
+地址：上海市-宝山区-德都路
+坐标：121.428564,31.42679
+`,
+      `
+      新月鸿锦园-南门东侧
+地址：宝山区月罗路251号
+坐标：121.419805,31.425713
+`,
+      `
+      月罗路307弄-5幢
+地址：上海市宝山区月浦月罗路307弄5幢
+坐标：121.417483,31.426136
+`,
+      `
+      中冶尚园-西门南侧
+地址：上海市宝山区申浦路中冶尚园
+坐标：121.41978,31.431319
+`,
+      `
+      宝月尚园-南门西侧
+地址：上海市宝山区月塘路中冶尚园西南侧约240米
+坐标：121.418504,31.429208
+`,
+      `
+      中冶锦园-东门
+地址：上海市宝山区月富路
+坐标：121.417452,31.434901
+`,
+      `
+      月浦经济发展中心（位置未知，非必要不参考）
+地址：上海市宝山区蕰川路4303号
+坐标：121.424895,31.427806
+`,
+  ]
+  
+  var guCunMarkers = [
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+      `
+
+`,
+    ];
+
+    var markers = [
+      {
+        content: "漠河路1168号", title: "漠河路1168号", imageOffset: { width: -46, height: -21 },
+        position: { lat: 31.413183, lng: 121.47237 }
+      },
+      {
+        content: "3号线铁力路地铁站2号口", title: "3号线铁力路地铁站2号口", imageOffset: { width: -46, height: -21 },
+        position: { lat: 31.414285, lng: 121.467654 }
+      },
+    ];
+
+    const preMarkers = [].concat(yangHangMarkers, yuePuMarkers)
+
+    preMarkers.forEach((v, i, arr) => {
+      console.log(v, i, arr)
+      const addressArr = v.trim().split("\n")
+      const lngAndLatArr = addressArr[2].replace("坐标：", "").split(",").map(parseFloat)
+      markers.push(
+        {
+          content: addressArr[0], title: addressArr[1], imageOffset: { width: -46, height: -21 },
+          position: { lat: lngAndLatArr[1], lng: lngAndLatArr[0] }
+        }
+      )
+
+    });
+
+    console.log(markers)
+
+    for (var index = 0; index < markers.length; index++) {
+      var point = new BMap.Point(markers[index].position.lng, markers[index].position.lat);
+      var marker = new BMap.Marker(point, {
+        icon: new BMap.Icon("http://api.map.baidu.com/lbsapi/createmap/images/icon.png", new BMap.Size(20, 25), {
+          imageOffset: new BMap.Size(markers[index].imageOffset.width, markers[index].imageOffset.height)
+        })
+      });
+      var label = new BMap.Label(markers[index].title, { offset: new BMap.Size(25, 5) });
+      var opts = {
+        width: 200,
+        title: markers[index].title,
+        enableMessage: false
+      };
+      var infoWindow = new BMap.InfoWindow(markers[index].content, opts);
+      marker.setLabel(label);
+      addClickHandler(marker, infoWindow);
+      map.addOverlay(marker);
+    };
+  }
+  //向地图添加控件
+  function addMapControl() {
+    var scaleControl = new BMap.ScaleControl({ anchor: BMAP_ANCHOR_BOTTOM_LEFT });
+    scaleControl.setUnit(BMAP_UNIT_IMPERIAL);
+    map.addControl(scaleControl);
+    var navControl = new BMap.NavigationControl({ anchor: BMAP_ANCHOR_TOP_LEFT, type: BMAP_NAVIGATION_CONTROL_LARGE });
+    map.addControl(navControl);
+    var overviewControl = new BMap.OverviewMapControl({ anchor: BMAP_ANCHOR_BOTTOM_RIGHT, isOpen: true });
+    map.addControl(overviewControl);
+  }
+  var map;
+  initMap();
+</script>
+
+</html>
